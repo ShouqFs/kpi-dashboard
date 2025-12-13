@@ -1,0 +1,1288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hospitals & Doctors Satisfaction Levels</title>
+  <style>
+    :root {
+      --border: #b5b5b5;
+      --bg: #f7f7f7;
+      --accent: #1f7a8c;
+      --text: #404040;
+      --muted: #666;
+    }
+    * { 
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #FAF8F5;
+      color: #404040;
+    }
+    .page {
+      max-width: 1200px;
+      margin: 24px auto;
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      padding: 24px 24px 32px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-arabic {
+      font-size: 18px;
+      font-weight: 600;
+      color: #286140;
+      line-height: 1.2;
+    }
+    .logo-english {
+      font-size: 14px;
+      font-weight: 500;
+      color: #b58500;
+      line-height: 1.2;
+      font-family: serif;
+    }
+    .logo-emblem {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-emblem img {
+      max-width: 120px;
+      max-height: 120px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+    .moh-logo {
+      max-height: 48px;
+      width: auto;
+    }
+    .header-separator {
+      width: 1px;
+      height: 50px;
+      background-color: #404040;
+    }
+    .header-title {
+      flex: 1;
+      margin: 0;
+      font-weight: 600;
+      font-size: 24px;
+      letter-spacing: 0.2px;
+      color: #404040;
+    }
+    h1 {
+      margin: 0 0 24px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 4fr auto;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .filters-group {
+      display: flex;
+      gap: 12px;
+  width: 100%;
+  align-items: center;
+    }
+    select, input[type="search"] {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0 12px;
+      font-size: 14px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    #searchInput { min-width: 380px; }
+/* Keep region visible and prevent collapsing */
+.filters-group select {
+  flex: 0 0 220px;
+  min-width: 220px;
+}
+.filters-group input[type="search"] {
+  flex: 1 1 auto;
+  min-width: 360px;
+}
+    select:focus, input[type="search"]:focus {
+      border-color: var(--accent);
+    }
+    .filter-dropdown {
+      position: relative;
+      justify-self: end;
+    }
+    .filter-toggle {
+      height: 44px;
+      min-width: 160px;
+      padding: 0 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .filter-toggle:after {
+      content: "▾";
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .panel {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      min-width: 280px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      z-index: 10;
+    }
+    .panel header {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .panel-section {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-section:last-of-type { border-bottom: none; }
+    .panel-section h4 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 2px 0;
+      user-select: none;
+      gap: 8px;
+    }
+    .section-header button {
+      all: unset;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .section-header .chevron {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .section-content.hidden {
+      display: none;
+    }
+    .panel input[type="search"] {
+      margin-bottom: 8px;
+      height: 36px;
+    }
+    .checklist {
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 8px;
+      background: #fff;
+    }
+    .checklist label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      padding: 6px 4px;
+      cursor: pointer;
+    }
+    .checklist label:hover {
+      background: #f5f5f5;
+    }
+    .checklist input {
+      margin: 0;
+    }
+    .hidden { display: none; }
+    .table-wrap {
+      margin-top: 22px;
+      overflow-x: auto;
+      overflow-y: visible;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px 10px;
+      font-size: 14px;
+      background: #fafafa;
+    }
+    th {
+      background: #f1f1f1;
+      text-align: left;
+      position: relative;
+      user-select: none;
+      white-space: nowrap;
+    }
+    th.sortable {
+      cursor: pointer;
+    }
+    th .sort {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+    .satisfaction-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .satisfaction-percentage {
+      font-size: 14px;
+      font-weight: 500;
+      min-width: 40px;
+    }
+    .satisfaction-bar {
+      flex: 1;
+      height: 6px;
+      background-color: #e0e0e0;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      min-width: 20px;
+    }
+    .satisfaction-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    .bar-dark-green { background-color: #286140; }
+    .bar-light-green { background-color: #497a63; }
+    .bar-gold { background-color: #b58500; }
+    .bar-yellowish { background-color: #c29648; }
+    tr:nth-child(even) td { background: #fff; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #e3f2f8;
+      color: var(--accent);
+      font-size: 12px;
+      border: 1px solid #c9e5ef;
+    }
+    .empty {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (max-width: 820px) {
+      .page {
+        padding: 16px;
+      }
+      
+      .controls {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .filters-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .filters-group select,
+      .filters-group input[type="search"] {
+        min-width: 100%;
+        width: 100%;
+      }
+      
+      #searchInput {
+        min-width: 100%;
+      }
+    }
+
+    /* ===========================
+       Mobile Optimization
+       =========================== */
+    @media (max-width: 768px) {
+      * {
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      
+      .page {
+        margin: 0;
+        border: none;
+        box-shadow: none;
+        padding: 12px;
+        width: 100%;
+      }
+      
+      .header {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 8px;
+        width: 100%;
+      }
+      
+      .logo-section {
+        flex-shrink: 0;
+        gap: 8px;
+      }
+      
+      .logo-emblem {
+        flex-shrink: 0;
+      }
+      
+      .logo-emblem img,
+      .moh-logo {
+        max-width: 60px;
+        max-height: 35px;
+        width: auto;
+        height: auto;
+      }
+      
+      .header-separator {
+        width: 1px;
+        height: 30px;
+        flex-shrink: 0;
+      }
+      
+      .header-title {
+        font-size: 14px;
+        line-height: 1.3;
+        flex: 1;
+        word-wrap: break-word;
+        min-width: 0;
+      }
+      
+      h1 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+      
+      .controls {
+        grid-template-columns: 1fr;
+        gap: 2px;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .filters-group {
+        flex-direction: column;
+        gap: 2px;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      
+      select, input[type="search"] {
+        height: 32px;
+        font-size: 13px;
+        padding: 0 6px;
+      }
+      
+      #regionSelect {
+        height: 30px;
+        padding: 0 6px;
+        font-size: 12px;
+        line-height: 1.2;
+      }
+      
+      .filters-group select,
+      .filters-group input[type="search"],
+      #searchInput {
+        min-width: 100%;
+        width: 100%;
+        max-width: 100%;
+        height: 32px;
+      }
+      
+      #searchInput {
+        height: 32px;
+        padding: 0 6px;
+        font-size: 13px;
+      }
+      
+      .filter-dropdown {
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .filter-toggle {
+        width: 100%;
+        max-width: 100%;
+        min-width: auto;
+        height: 32px;
+        font-size: 13px;
+        padding: 0 8px;
+      }
+      
+      .filter-dropdown {
+        margin-top: 2px;
+      }
+      
+      .panel {
+        right: auto;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: auto;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      
+      .panel-section {
+        padding: 8px 10px;
+      }
+      
+      .panel input[type="search"] {
+        height: 32px;
+        font-size: 13px;
+      }
+      
+      .table-wrap {
+        border: 1px solid var(--border);
+        margin-top: 6px;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+      }
+      
+      table {
+        display: table;
+        width: 100%;
+        min-width: 600px;
+      }
+      
+      thead {
+        display: table-header-group;
+      }
+      
+      tbody {
+        display: table-row-group;
+        width: 100%;
+      }
+      
+      tr {
+        display: table-row;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 0;
+        padding: 0;
+        width: auto;
+        max-width: none;
+      }
+      
+      th, td {
+        display: table-cell;
+        padding: 8px 6px;
+        font-size: 12px;
+        border: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      
+      th {
+        background: #f1f1f1;
+        font-size: 11px;
+        padding: 6px 4px;
+      }
+      
+      td {
+        background: #fafafa;
+        word-wrap: break-word;
+        white-space: normal;
+      }
+      
+      tr:nth-child(even) td {
+        background: #fff;
+      }
+      
+      td::before {
+        display: none;
+      }
+      
+      .satisfaction-cell {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: auto;
+        max-width: none;
+      }
+      
+      .satisfaction-percentage {
+        min-width: 35px;
+        font-size: 11px;
+        flex-shrink: 0;
+      }
+      
+      .satisfaction-bar {
+        height: 5px;
+        min-width: 40px;
+        max-width: 80px;
+        flex: 0 1 auto;
+      }
+      
+      .panel-section h4 {
+        font-size: 12px;
+        margin: 0 0 6px;
+      }
+      
+      .checklist {
+        max-height: 150px;
+        font-size: 12px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .page {
+        padding: 8px;
+      }
+      
+      .header {
+        padding: 8px;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      
+      .logo-emblem img,
+      .moh-logo {
+        max-width: 50px;
+        max-height: 30px;
+      }
+      
+      .header-separator {
+        height: 25px;
+      }
+      
+      .header-title {
+        font-size: 12px;
+      }
+      
+      .controls {
+        gap: 6px;
+      }
+      
+      .filters-group {
+        gap: 6px;
+      }
+      
+      select, input[type="search"] {
+        height: 36px;
+        font-size: 13px;
+        padding: 0 10px;
+      }
+      
+      .filter-toggle {
+        height: 36px;
+        font-size: 13px;
+      }
+      
+      table {
+        min-width: 550px;
+        font-size: 11px;
+      }
+      
+      th, td {
+        padding: 6px 4px;
+        font-size: 11px;
+      }
+      
+      th {
+        font-size: 10px;
+        padding: 5px 3px;
+      }
+      
+      .satisfaction-percentage {
+        font-size: 10px;
+        min-width: 30px;
+      }
+      
+      .satisfaction-bar {
+        min-width: 35px;
+        max-width: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo-emblem">
+          <img src="./moh-logo.png" alt="Ministry of Health Logo" class="moh-logo" />
+        </div>
+      </div>
+      <div class="header-separator"></div>
+      <h1 class="header-title">Hospitals &amp; Doctors Satisfaction Levels</h1>
+    </div>
+
+    <div class="controls">
+      <div class="filters-group">
+        <select id="regionSelect">
+          <option value="">All Saudi Regions</option>
+          <option value="Riyadh">Riyadh</option>
+          <option value="Makkah">Makkah</option>
+          <option value="Madinah">Madinah</option>
+          <option value="Eastern Province">Eastern Province</option>
+          <option value="Qassim">Qassim</option>
+          <option value="Asir">Asir</option>
+          <option value="Tabuk">Tabuk</option>
+          <option value="Hail">Hail</option>
+          <option value="Northern Borders">Northern Borders</option>
+          <option value="Jazan">Jazan</option>
+          <option value="Najran">Najran</option>
+          <option value="Al Bahah">Al Bahah</option>
+          <option value="Al Jawf">Al Jawf</option>
+        </select>
+        <input id="searchInput" type="search" placeholder="Search (Hospital, Doctor, Specialty...)" />
+      </div>
+
+      <div></div>
+
+      <div class="filter-dropdown">
+        <button id="filterToggle" class="filter-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+          Filter By
+        </button>
+        <div id="filterMenu" class="panel hidden" role="menu">
+          <div class="panel-section">
+            <div class="section-header" data-target="hospitalSection">
+              <button type="button">Hospitals</button>
+              <span class="chevron" id="hospitalChevron">▸</span>
+            </div>
+            <div id="hospitalSection" class="section-content hidden">
+              <input id="hospitalFilterSearch" type="search" placeholder="Search hospitals..." />
+              <div id="hospitalChecklist" class="checklist"></div>
+            </div>
+          </div>
+          <div class="panel-section">
+            <div class="section-header" data-target="citySection">
+              <button type="button">City</button>
+              <span class="chevron" id="cityChevron">▸</span>
+            </div>
+            <div id="citySection" class="section-content hidden">
+              <input id="cityFilterSearch" type="search" placeholder="Search cities..." />
+              <div id="cityChecklist" class="checklist"></div>
+            </div>
+          </div>
+          <div class="panel-section">
+            <div class="section-header" data-target="doctorSection">
+              <button type="button">Doctors</button>
+              <span class="chevron" id="doctorChevron">▸</span>
+            </div>
+            <div id="doctorSection" class="section-content hidden">
+              <input id="doctorFilterSearch" type="search" placeholder="Search doctors..." />
+              <div id="doctorChecklist" class="checklist"></div>
+            </div>
+          </div>
+          <div class="panel-section">
+            <div class="section-header" data-target="specialtySection">
+              <button type="button">Specialties</button>
+              <span class="chevron" id="specialtyChevron">▸</span>
+            </div>
+            <div id="specialtySection" class="section-content hidden">
+              <input id="specialtyFilterSearch" type="search" placeholder="Search specialties..." />
+              <div id="specialtyChecklist" class="checklist"></div>
+            </div>
+          </div>
+          <div class="panel-section">
+            <div class="section-header" data-target="satisfactionSection">
+              <button type="button">Satisfaction Range</button>
+              <span class="chevron" id="satisfactionChevron">▸</span>
+            </div>
+            <div id="satisfactionSection" class="section-content hidden">
+              <h4>Hospital Satisfaction</h4>
+              <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <input id="hospitalMinSatisfaction" type="number" min="0" max="100" placeholder="Min" style="flex: 1; height: 36px; padding: 0 8px; border: 1px solid var(--border); border-radius: 4px;" />
+                <input id="hospitalMaxSatisfaction" type="number" min="0" max="100" placeholder="Max" style="flex: 1; height: 36px; padding: 0 8px; border: 1px solid var(--border); border-radius: 4px;" />
+              </div>
+              <h4>Doctor Satisfaction</h4>
+              <div style="display: flex; gap: 8px;">
+                <input id="doctorMinSatisfaction" type="number" min="0" max="100" placeholder="Min" style="flex: 1; height: 36px; padding: 0 8px; border: 1px solid var(--border); border-radius: 4px;" />
+                <input id="doctorMaxSatisfaction" type="number" min="0" max="100" placeholder="Max" style="flex: 1; height: 36px; padding: 0 8px; border: 1px solid var(--border); border-radius: 4px;" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="satisfactionTable">
+        <thead>
+          <tr>
+            <th>City</th>
+            <th>Hospital Name</th>
+            <th class="sortable" data-key="hospitalScore">
+              Hospital Satisfaction % <span class="sort" id="hospitalSort">↕</span>
+            </th>
+            <th>Doctor Name</th>
+            <th class="sortable" data-key="doctorScore">
+              Doctor Satisfaction % <span class="sort" id="doctorSort">↕</span>
+            </th>
+            <th>Doctor Specialty</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Mock dataset for the dashboard.
+    // Each region has at least 2 hospitals and 5 doctors per hospital (10+ rows/region).
+    const regionHospitalData = {
+      "Riyadh": [
+        { city: "Riyadh", hospital: "King Fahd Medical City", score: 91, doctors: [
+          { name: "Dr. Al-Mutairi", score: 93, specialty: "Cardiology" },
+          { name: "Dr. Al-Ajlan", score: 88, specialty: "Neurology" },
+          { name: "Dr. Al-Rajhi", score: 90, specialty: "Orthopedics" },
+          { name: "Dr. Al-Sahli", score: 86, specialty: "Dermatology" },
+          { name: "Dr. Al-Harkan", score: 89, specialty: "Endocrinology" },
+        ]},
+        { city: "Riyadh", hospital: "King Faisal Specialist Hospital", score: 95, doctors: [
+          { name: "Dr. Al-Suwailem", score: 94, specialty: "Oncology" },
+          { name: "Dr. Al-Tamimi", score: 92, specialty: "Cardiology" },
+          { name: "Dr. Al-Jasser", score: 90, specialty: "General Surgery" },
+          { name: "Dr. Al-Binali", score: 91, specialty: "Pulmonology" },
+          { name: "Dr. Al-Olayan", score: 89, specialty: "Nephrology" },
+        ]},
+      ],
+      "Makkah": [
+        { city: "Makkah", hospital: "King Abdullah Medical City", score: 88, doctors: [
+          { name: "Dr. Al-Harbi", score: 90, specialty: "Oncology" },
+          { name: "Dr. Al-Saedi", score: 85, specialty: "Cardiology" },
+          { name: "Dr. Al-Humoud", score: 83, specialty: "Neurology" },
+          { name: "Dr. Al-Johani", score: 82, specialty: "Dermatology" },
+          { name: "Dr. Al-Hazmi", score: 80, specialty: "ENT" },
+        ]},
+        { city: "Makkah", hospital: "Al Noor Specialist Hospital", score: 80, doctors: [
+          { name: "Dr. Al-Sharif", score: 82, specialty: "Cardiology" },
+          { name: "Dr. Al-Qurashi", score: 81, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Zahrani", score: 79, specialty: "Orthopedics" },
+          { name: "Dr. Al-Mansi", score: 78, specialty: "Family Medicine" },
+          { name: "Dr. Al-Mutlaq", score: 77, specialty: "Pediatrics" },
+        ]},
+      ],
+      "Madinah": [
+        { city: "Madinah", hospital: "Ohud Hospital", score: 82, doctors: [
+          { name: "Dr. Al-Qahtani", score: 85, specialty: "Pediatrics" },
+          { name: "Dr. Al-Bishri", score: 82, specialty: "Family Medicine" },
+          { name: "Dr. Al-Ghamdi", score: 81, specialty: "Dermatology" },
+          { name: "Dr. Al-Madani", score: 79, specialty: "Cardiology" },
+          { name: "Dr. Al-Dhaheri", score: 80, specialty: "Orthopedics" },
+        ]},
+        { city: "Madinah", hospital: "King Fahd Hospital Madinah", score: 79, doctors: [
+          { name: "Dr. Al-Saeed", score: 81, specialty: "General Surgery" },
+          { name: "Dr. Al-Najjar", score: 80, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Shamrani", score: 78, specialty: "ENT" },
+          { name: "Dr. Al-Amri", score: 77, specialty: "Pulmonology" },
+          { name: "Dr. Al-Turki", score: 76, specialty: "Endocrinology" },
+        ]},
+      ],
+      "Eastern Province": [
+        { city: "Dhahran", hospital: "Johns Hopkins Aramco Healthcare", score: 94, doctors: [
+          { name: "Dr. Al-Dossary", score: 92, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Mubarak", score: 91, specialty: "Cardiology" },
+          { name: "Dr. Al-Sultan", score: 90, specialty: "Neurology" },
+          { name: "Dr. Al-Naim", score: 88, specialty: "Orthopedics" },
+          { name: "Dr. Al-Khalifa", score: 87, specialty: "Dermatology" },
+        ]},
+        { city: "Dammam", hospital: "King Fahd Hospital Dammam", score: 85, doctors: [
+          { name: "Dr. Al-Qaed", score: 86, specialty: "Orthopedics" },
+          { name: "Dr. Al-Jishi", score: 84, specialty: "Cardiology" },
+          { name: "Dr. Al-Khan", score: 82, specialty: "Pulmonology" },
+          { name: "Dr. Al-Hashim", score: 83, specialty: "General Surgery" },
+          { name: "Dr. Al-Hassan", score: 81, specialty: "Endocrinology" },
+        ]},
+        { city: "Qatif", hospital: "Qatif Central Hospital", score: 78, doctors: [
+          { name: "Dr. Al-Mulhim", score: 80, specialty: "Dermatology" },
+          { name: "Dr. Al-Bakr", score: 79, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Qassab", score: 78, specialty: "Cardiology" },
+          { name: "Dr. Al-Marhoon", score: 77, specialty: "Orthopedics" },
+          { name: "Dr. Al-Mousa", score: 76, specialty: "Endocrinology" },
+        ]},
+      ],
+      "Qassim": [
+        { city: "Buraidah", hospital: "Buraidah Central Hospital", score: 78, doctors: [
+          { name: "Dr. Al-Shammari", score: 80, specialty: "Orthopedics" },
+          { name: "Dr. Al-Masaud", score: 79, specialty: "Cardiology" },
+          { name: "Dr. Al-Anazi", score: 77, specialty: "Dermatology" },
+          { name: "Dr. Al-Fahad", score: 76, specialty: "Family Medicine" },
+          { name: "Dr. Al-Hoshan", score: 75, specialty: "ENT" },
+        ]},
+        { city: "Buraidah", hospital: "King Fahd Specialist Hospital Qassim", score: 83, doctors: [
+          { name: "Dr. Al-Hassan", score: 85, specialty: "Cardiology" },
+          { name: "Dr. Al-Mutlaq", score: 84, specialty: "Neurology" },
+          { name: "Dr. Al-Mutairi", score: 82, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Rajeh", score: 81, specialty: "Pulmonology" },
+          { name: "Dr. Al-Khudair", score: 80, specialty: "Endocrinology" },
+        ]},
+      ],
+      "Asir": [
+        { city: "Abha", hospital: "Asir Central Hospital", score: 84, doctors: [
+          { name: "Dr. Al-Asmari", score: 86, specialty: "Neurology" },
+          { name: "Dr. Al-Ahmari", score: 85, specialty: "Cardiology" },
+          { name: "Dr. Al-Muqbil", score: 83, specialty: "Orthopedics" },
+          { name: "Dr. Al-Fifi", score: 82, specialty: "Dermatology" },
+          { name: "Dr. Al-Jeraisy", score: 81, specialty: "ENT" },
+        ]},
+        { city: "Abha", hospital: "Abha Maternity & Children Hospital", score: 81, doctors: [
+          { name: "Dr. Al-Malki", score: 83, specialty: "Pediatrics" },
+          { name: "Dr. Al-Faifi", score: 82, specialty: "Neonatology" },
+          { name: "Dr. Al-Sulami", score: 80, specialty: "Gynecology" },
+          { name: "Dr. Al-Luhaidan", score: 79, specialty: "Family Medicine" },
+          { name: "Dr. Al-Shehri", score: 78, specialty: "Endocrinology" },
+        ]},
+      ],
+      "Tabuk": [
+        { city: "Tabuk", hospital: "King Fahd Specialist Hospital Tabuk", score: 76, doctors: [
+          { name: "Dr. Al-Anazi", score: 79, specialty: "General Surgery" },
+          { name: "Dr. Al-Otaibi", score: 78, specialty: "Orthopedics" },
+          { name: "Dr. Al-Dhafeeri", score: 77, specialty: "Cardiology" },
+          { name: "Dr. Al-Mutairi", score: 75, specialty: "Dermatology" },
+          { name: "Dr. Al-Zaid", score: 74, specialty: "Internal Medicine" },
+        ]},
+        { city: "Tabuk", hospital: "King Khalid Hospital Tabuk", score: 74, doctors: [
+          { name: "Dr. Al-Johani", score: 77, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Amri", score: 76, specialty: "Pulmonology" },
+          { name: "Dr. Al-Sharari", score: 75, specialty: "Family Medicine" },
+          { name: "Dr. Al-Harbi", score: 73, specialty: "ENT" },
+          { name: "Dr. Al-Ruwaili", score: 72, specialty: "Pediatrics" },
+        ]},
+      ],
+      "Hail": [
+        { city: "Hail", hospital: "King Khalid Hospital Hail", score: 80, doctors: [
+          { name: "Dr. Al-Rashidi", score: 82, specialty: "Endocrinology" },
+          { name: "Dr. Al-Saleh", score: 81, specialty: "Cardiology" },
+          { name: "Dr. Al-Maiman", score: 80, specialty: "Orthopedics" },
+          { name: "Dr. Al-Anzi", score: 78, specialty: "Pulmonology" },
+          { name: "Dr. Al-Badi", score: 77, specialty: "Dermatology" },
+        ]},
+        { city: "Hail", hospital: "Hail General Hospital", score: 72, doctors: [
+          { name: "Dr. Al-Fuhaid", score: 74, specialty: "Family Medicine" },
+          { name: "Dr. Al-Dakheel", score: 73, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Jarallah", score: 72, specialty: "Pediatrics" },
+          { name: "Dr. Al-Huwail", score: 71, specialty: "ENT" },
+          { name: "Dr. Al-Ayed", score: 70, specialty: "General Surgery" },
+        ]},
+      ],
+      "Northern Borders": [
+        { city: "Arar", hospital: "Arar Central Hospital", score: 73, doctors: [
+          { name: "Dr. Al-Otaibi", score: 75, specialty: "Family Medicine" },
+          { name: "Dr. Al-Mutairi", score: 74, specialty: "Cardiology" },
+          { name: "Dr. Al-Dawsari", score: 73, specialty: "Dermatology" },
+          { name: "Dr. Al-Sahli", score: 72, specialty: "Orthopedics" },
+          { name: "Dr. Al-Dahmash", score: 71, specialty: "Internal Medicine" },
+        ]},
+        { city: "Arar", hospital: "Prince Abdulaziz bin Musaed Hospital", score: 77, doctors: [
+          { name: "Dr. Al-Zaid", score: 78, specialty: "Cardiology" },
+          { name: "Dr. Al-Tuwaijri", score: 77, specialty: "Neurology" },
+          { name: "Dr. Al-Ruwaili", score: 76, specialty: "ENT" },
+          { name: "Dr. Al-Khalaf", score: 75, specialty: "Pulmonology" },
+          { name: "Dr. Al-Ajmi", score: 74, specialty: "Endocrinology" },
+        ]},
+      ],
+      "Jazan": [
+        { city: "Jazan", hospital: "Prince Mohammed bin Nasser Hospital", score: 77, doctors: [
+          { name: "Dr. Al-Ghamdi", score: 78, specialty: "Pulmonology" },
+          { name: "Dr. Al-Shahrani", score: 77, specialty: "Cardiology" },
+          { name: "Dr. Al-Qahtani", score: 76, specialty: "Orthopedics" },
+          { name: "Dr. Al-Mufarrih", score: 75, specialty: "Dermatology" },
+          { name: "Dr. Al-Fifi", score: 74, specialty: "Family Medicine" },
+        ]},
+        { city: "Sabya", hospital: "Sabya General Hospital", score: 70, doctors: [
+          { name: "Dr. Al-Hazmi", score: 72, specialty: "General Medicine" },
+          { name: "Dr. Al-Sulami", score: 71, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Malki", score: 70, specialty: "ENT" },
+          { name: "Dr. Al-Amri", score: 69, specialty: "Pediatrics" },
+          { name: "Dr. Al-Otaibi", score: 68, specialty: "Endocrinology" },
+        ]},
+      ],
+      "Najran": [
+        { city: "Najran", hospital: "King Khalid Hospital Najran", score: 79, doctors: [
+          { name: "Dr. Al-Yami", score: 81, specialty: "Dermatology" },
+          { name: "Dr. Al-Sharari", score: 80, specialty: "Cardiology" },
+          { name: "Dr. Al-Mutairi", score: 79, specialty: "Orthopedics" },
+          { name: "Dr. Al-Saiari", score: 78, specialty: "Pulmonology" },
+          { name: "Dr. Al-Khaldi", score: 77, specialty: "Endocrinology" },
+        ]},
+        { city: "Najran", hospital: "Najran General Hospital", score: 74, doctors: [
+          { name: "Dr. Al-Harthi", score: 76, specialty: "Orthopedics" },
+          { name: "Dr. Al-Dosari", score: 75, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Qahtani", score: 74, specialty: "Family Medicine" },
+          { name: "Dr. Al-Saidi", score: 73, specialty: "ENT" },
+          { name: "Dr. Al-Mutlaq", score: 72, specialty: "Pediatrics" },
+        ]},
+      ],
+      "Al Bahah": [
+        { city: "Al Bahah", hospital: "King Fahd Hospital Al Bahah", score: 75, doctors: [
+          { name: "Dr. Al-Zahrani", score: 77, specialty: "Gastroenterology" },
+          { name: "Dr. Al-Ghamdi", score: 76, specialty: "Cardiology" },
+          { name: "Dr. Al-Harbi", score: 75, specialty: "Orthopedics" },
+          { name: "Dr. Al-Somali", score: 74, specialty: "Dermatology" },
+          { name: "Dr. Al-Dosari", score: 73, specialty: "Endocrinology" },
+        ]},
+        { city: "Al Makhwah", hospital: "Al Makhwah General Hospital", score: 71, doctors: [
+          { name: "Dr. Al-Mutair", score: 73, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Qahtani", score: 72, specialty: "Family Medicine" },
+          { name: "Dr. Al-Jabri", score: 71, specialty: "ENT" },
+          { name: "Dr. Al-Malki", score: 70, specialty: "Pediatrics" },
+          { name: "Dr. Al-Sharif", score: 69, specialty: "General Surgery" },
+        ]},
+      ],
+      "Al Jawf": [
+        { city: "Sakaka", hospital: "Prince Mutaib bin Abdulaziz Hospital", score: 83, doctors: [
+          { name: "Dr. Al-Ruwaili", score: 84, specialty: "Cardiology" },
+          { name: "Dr. Al-Dhafeeri", score: 83, specialty: "Orthopedics" },
+          { name: "Dr. Al-Anazi", score: 82, specialty: "Neurology" },
+          { name: "Dr. Al-Kahtani", score: 81, specialty: "Pulmonology" },
+          { name: "Dr. Al-Mutairi", score: 80, specialty: "Dermatology" },
+        ]},
+        { city: "Sakaka", hospital: "Sakaka Central Hospital", score: 79, doctors: [
+          { name: "Dr. Al-Kahtani", score: 80, specialty: "Neurology" },
+          { name: "Dr. Al-Zaid", score: 79, specialty: "Internal Medicine" },
+          { name: "Dr. Al-Harbi", score: 78, specialty: "Pediatrics" },
+          { name: "Dr. Al-Saiari", score: 77, specialty: "Endocrinology" },
+          { name: "Dr. Al-Qarni", score: 76, specialty: "General Surgery" },
+        ]},
+      ],
+    };
+
+    const records = Object.entries(regionHospitalData).flatMap(([region, hospitals]) =>
+      hospitals.flatMap(h =>
+        h.doctors.map(d => ({
+          region,
+          city: h.city,
+          hospital: h.hospital,
+          hospitalScore: h.score,
+          doctor: d.name,
+          doctorScore: d.score,
+          specialty: d.specialty,
+        }))
+      )
+    );
+
+    const state = {
+      sortKey: null,
+      sortDir: null, // 'asc' | 'desc'
+      hospitalQuery: "",
+      cityQuery: "",
+      doctorQuery: "",
+      specialtyQuery: "",
+      selectedHospitals: new Set(),
+      selectedCities: new Set(),
+      selectedDoctors: new Set(),
+      selectedSpecialties: new Set(),
+      hospitalMinSatisfaction: null,
+      hospitalMaxSatisfaction: null,
+      doctorMinSatisfaction: null,
+      doctorMaxSatisfaction: null
+    };
+
+    const tbody = document.querySelector("#satisfactionTable tbody");
+    const regionSelect = document.getElementById("regionSelect");
+    const searchInput = document.getElementById("searchInput");
+    const hospitalFilterSearch = document.getElementById("hospitalFilterSearch");
+    const cityFilterSearch = document.getElementById("cityFilterSearch");
+    const doctorFilterSearch = document.getElementById("doctorFilterSearch");
+    const specialtyFilterSearch = document.getElementById("specialtyFilterSearch");
+    const hospitalChecklist = document.getElementById("hospitalChecklist");
+    const cityChecklist = document.getElementById("cityChecklist");
+    const doctorChecklist = document.getElementById("doctorChecklist");
+    const specialtyChecklist = document.getElementById("specialtyChecklist");
+    const hospitalSort = document.getElementById("hospitalSort");
+    const doctorSort = document.getElementById("doctorSort");
+    const filterToggle = document.getElementById("filterToggle");
+    const filterMenu = document.getElementById("filterMenu");
+    const sectionHeaders = document.querySelectorAll(".section-header");
+    const chevrons = {
+      hospitalSection: document.getElementById("hospitalChevron"),
+      citySection: document.getElementById("cityChevron"),
+      doctorSection: document.getElementById("doctorChevron"),
+      specialtySection: document.getElementById("specialtyChevron"),
+      satisfactionSection: document.getElementById("satisfactionChevron"),
+    };
+    const hospitalMinSatisfaction = document.getElementById("hospitalMinSatisfaction");
+    const hospitalMaxSatisfaction = document.getElementById("hospitalMaxSatisfaction");
+    const doctorMinSatisfaction = document.getElementById("doctorMinSatisfaction");
+    const doctorMaxSatisfaction = document.getElementById("doctorMaxSatisfaction");
+
+    const uniqueHospitals = [...new Set(records.map(r => r.hospital))].sort();
+    const uniqueDoctors = [...new Set(records.map(r => r.doctor))].sort();
+    const uniqueSpecialties = [...new Set(records.map(r => r.specialty))].sort();
+
+    function renderChecklist(container, items, selectedSet, query) {
+      container.innerHTML = "";
+      items
+        .filter(name => name.toLowerCase().includes(query.toLowerCase()))
+        .forEach(name => {
+          const id = `${container.id}-${name}`.replace(/\s+/g, "-");
+          const label = document.createElement("label");
+          label.htmlFor = id;
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = id;
+          checkbox.checked = selectedSet.has(name);
+          checkbox.addEventListener("change", () => {
+            if (checkbox.checked) selectedSet.add(name);
+            else selectedSet.delete(name);
+            render();
+          });
+          const text = document.createElement("span");
+          text.textContent = name;
+          label.appendChild(checkbox);
+          label.appendChild(text);
+          container.appendChild(label);
+        });
+      if (!container.children.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No matches";
+        container.appendChild(empty);
+      }
+    }
+
+    function getBarClass(score) {
+      if (score >= 90) return "bar-dark-green";
+      if (score >= 85) return "bar-light-green";
+      if (score >= 80) return "bar-gold";
+      return "bar-yellowish";
+    }
+    
+    function renderSatisfactionCell(score) {
+      const barClass = getBarClass(score);
+      return `
+        <div class="satisfaction-cell">
+          <span class="satisfaction-percentage">${score}%</span>
+          <div class="satisfaction-bar">
+            <div class="satisfaction-bar-fill ${barClass}" style="width: ${score}%"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getCitiesForRegion() {
+      const region = regionSelect.value.trim();
+      return [...new Set(
+        records
+          .filter(r => !region || r.region === region)
+          .map(r => r.city)
+      )].sort();
+    }
+
+    function render() {
+      const regionValue = regionSelect.value.trim();
+      const region = regionValue.toLowerCase();
+      const query = searchInput.value.trim().toLowerCase();
+
+      const citiesForRegion = getCitiesForRegion();
+      renderChecklist(cityChecklist, citiesForRegion, state.selectedCities, state.cityQuery);
+
+      let rows = records.filter(item => {
+        const matchesRegion = !region || item.region.toLowerCase() === region;
+
+        const searchInAll =
+          item.city.toLowerCase().includes(query) ||
+          item.hospital.toLowerCase().includes(query) ||
+          item.doctor.toLowerCase().includes(query) ||
+          item.specialty.toLowerCase().includes(query);
+
+        const searchHospitalOnly = item.hospital.toLowerCase().includes(query);
+        const searchDoctorOnly =
+          item.doctor.toLowerCase().includes(query) ||
+          item.specialty.toLowerCase().includes(query);
+
+        const matchesSearch =
+          !query ||
+          searchInAll ||
+          searchHospitalOnly ||
+          searchDoctorOnly;
+
+        const matchesHospitalFilter =
+          !state.selectedHospitals.size || state.selectedHospitals.has(item.hospital);
+        const matchesCityFilter =
+          !state.selectedCities.size || state.selectedCities.has(item.city);
+        const matchesDoctorFilter =
+          !state.selectedDoctors.size || state.selectedDoctors.has(item.doctor);
+        const matchesSpecialtyFilter =
+          !state.selectedSpecialties.size || state.selectedSpecialties.has(item.specialty);
+
+        const matchesHospitalSatisfaction =
+          (state.hospitalMinSatisfaction === null || item.hospitalScore >= state.hospitalMinSatisfaction) &&
+          (state.hospitalMaxSatisfaction === null || item.hospitalScore <= state.hospitalMaxSatisfaction);
+
+        const matchesDoctorSatisfaction =
+          (state.doctorMinSatisfaction === null || item.doctorScore >= state.doctorMinSatisfaction) &&
+          (state.doctorMaxSatisfaction === null || item.doctorScore <= state.doctorMaxSatisfaction);
+
+        return matchesRegion && matchesSearch && matchesHospitalFilter && matchesCityFilter && matchesDoctorFilter && matchesSpecialtyFilter && matchesHospitalSatisfaction && matchesDoctorSatisfaction;
+      });
+
+      if (state.sortKey) {
+        const dir = state.sortDir === "asc" ? 1 : -1;
+        rows = rows.slice().sort((a, b) => (a[state.sortKey] - b[state.sortKey]) * dir);
+      }
+
+      tbody.innerHTML = "";
+      if (!rows.length) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 6;
+        td.className = "empty";
+        td.textContent = "No results found with the current filters.";
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+      }
+
+      rows.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td data-label="City">${item.city}</td>
+          <td data-label="Hospital">${item.hospital}</td>
+          <td data-label="Hospital Satisfaction">${renderSatisfactionCell(item.hospitalScore)}</td>
+          <td data-label="Doctor">${item.doctor}</td>
+          <td data-label="Doctor Satisfaction">${renderSatisfactionCell(item.doctorScore)}</td>
+          <td data-label="Specialty">${item.specialty}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function setSort(key) {
+      if (state.sortKey === key) {
+        state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+      } else {
+        state.sortKey = key;
+        state.sortDir = "desc";
+      }
+      hospitalSort.textContent = key === "hospitalScore" ? (state.sortDir === "asc" ? "↑" : "↓") : "↕";
+      doctorSort.textContent = key === "doctorScore" ? (state.sortDir === "asc" ? "↑" : "↓") : "↕";
+      render();
+    }
+
+    // Event wiring
+    regionSelect.addEventListener("change", render);
+    searchInput.addEventListener("input", render);
+    hospitalFilterSearch.addEventListener("input", e => {
+      state.hospitalQuery = e.target.value;
+      renderChecklist(hospitalChecklist, uniqueHospitals, state.selectedHospitals, state.hospitalQuery);
+    });
+    cityFilterSearch.addEventListener("input", e => {
+      state.cityQuery = e.target.value;
+      const citiesForRegion = getCitiesForRegion();
+      renderChecklist(cityChecklist, citiesForRegion, state.selectedCities, state.cityQuery);
+    });
+    doctorFilterSearch.addEventListener("input", e => {
+      state.doctorQuery = e.target.value;
+      renderChecklist(doctorChecklist, uniqueDoctors, state.selectedDoctors, state.doctorQuery);
+    });
+    specialtyFilterSearch.addEventListener("input", e => {
+      state.specialtyQuery = e.target.value;
+      renderChecklist(specialtyChecklist, uniqueSpecialties, state.selectedSpecialties, state.specialtyQuery);
+    });
+    hospitalMinSatisfaction.addEventListener("input", e => {
+      const value = e.target.value.trim();
+      state.hospitalMinSatisfaction = value === "" ? null : parseInt(value, 10);
+      render();
+    });
+    hospitalMaxSatisfaction.addEventListener("input", e => {
+      const value = e.target.value.trim();
+      state.hospitalMaxSatisfaction = value === "" ? null : parseInt(value, 10);
+      render();
+    });
+    doctorMinSatisfaction.addEventListener("input", e => {
+      const value = e.target.value.trim();
+      state.doctorMinSatisfaction = value === "" ? null : parseInt(value, 10);
+      render();
+    });
+    doctorMaxSatisfaction.addEventListener("input", e => {
+      const value = e.target.value.trim();
+      state.doctorMaxSatisfaction = value === "" ? null : parseInt(value, 10);
+      render();
+    });
+    document.querySelectorAll("th.sortable").forEach(th => {
+      th.addEventListener("click", () => setSort(th.dataset.key));
+    });
+    filterToggle.addEventListener("click", () => {
+      const isHidden = filterMenu.classList.toggle("hidden");
+      filterToggle.setAttribute("aria-expanded", String(!isHidden));
+    });
+    document.addEventListener("click", e => {
+      if (!filterMenu.contains(e.target) && !filterToggle.contains(e.target)) {
+        filterMenu.classList.add("hidden");
+        filterToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+    sectionHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const targetId = header.dataset.target;
+        const content = document.getElementById(targetId);
+        const isHidden = content.classList.toggle("hidden");
+        const chevron = chevrons[targetId];
+        if (chevron) chevron.textContent = isHidden ? "▸" : "▾";
+      });
+    });
+
+    // initial render of checklists and table
+    renderChecklist(hospitalChecklist, uniqueHospitals, state.selectedHospitals, state.hospitalQuery);
+    renderChecklist(cityChecklist, getCitiesForRegion(), state.selectedCities, state.cityQuery);
+    renderChecklist(doctorChecklist, uniqueDoctors, state.selectedDoctors, state.doctorQuery);
+    renderChecklist(specialtyChecklist, uniqueSpecialties, state.selectedSpecialties, state.specialtyQuery);
+    render();
+  </script>
+</body>
+</html>
+
